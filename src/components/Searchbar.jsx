@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 
-const Searchbar = ({ q, inputId, handleSubmit, handleChange }) => {
+const Searchbar = ({ query, inputId, handleSubmit, handleChange }) => {
 
     return (
   <form onSubmit={handleSubmit}>
@@ -10,9 +10,10 @@ const Searchbar = ({ q, inputId, handleSubmit, handleChange }) => {
     <input
       id = {inputId}
       type="text"
-      name="q"
-      value={q}
+      name="query"
+      value={query}
       autoFocus
+      autoComplete="off"
       placeholder="Search images and photos"
       onChange={handleChange}
     />

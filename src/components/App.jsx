@@ -1,10 +1,12 @@
 import { Component } from 'react';
-import ImagesList from './ImagesList';
+import css from './App.module.css';
+import ImagesList from './ImageList/ImagesList';
 import fetchImagesWithQuery from 'services/api';
 import { nanoid } from 'nanoid';
-import Searchbar from './Searchbar';
-import ModalImage from './ModalImage';
-
+import Searchbar from './Searchbar/Searchbar';
+import ModalImage from './ModalImage/ModalImage';
+import LoadMore from './LoadMoreButton/LoadMoreButton';
+import Loader from './Loader/Loader';
 
 class App extends Component {
   state = {
@@ -17,14 +19,13 @@ class App extends Component {
     showModal: false,
 }
 
-getLargeImgUrl = imgUrl => {
+openLargeImg = imgUrl => {
     this.setState({ largeImageUrl: imgUrl });
     this.toggleModal();
 }
 
 toggleModal = () => {
-    this.setState(state => ({
-        showModal: !state.showModal,
+    this.setState(({ showModal }) => ({showModal: !showModal,
     }))
 }
 
@@ -37,7 +38,6 @@ handleSubmit = (ev) => {
 resetState = () => {
     this.setState({
         q: '',
-        page: 1,
         items: [],
     })
 }
@@ -46,6 +46,18 @@ handleChange = (ev) => {
     const { name, value } = ev.target;
     this.setState({ [name]: value })
 }
+
+componentDidUpdate(_, prevState) {
+    if(prevState.page !== this.state.page || prevState.q !== this.state.q) {
+        this.getImages(this.state.query, this.state.page);
+    }
+}
+
+LoadMore = () => {
+    this.setState(prevState => ({
+        page: prevState.page + 1,
+    }));
+};
 
 getImages = async (q, page) => {
     try {
@@ -58,34 +70,35 @@ getImages = async (q, page) => {
             isLoading: false,
         }))
     } catch (error) {
-        this.setState({ error});
+        this.setState({
+            error: error.message,
+        });
     } finally {
         this.setState({ isLoading: false });
     }
 };
 
-componentDidUpdate(_, prevState) {
-    if(prevState.page !== this.state.page || prevState.q !== this.state.q) {
-        this.getImages(this.state.q, this.state.page);
-    }
-}
-
     render() {
         const inputId = nanoid();
-        const { items, q, showModal, largeImageUrl } = this.state;
+        const { items, q, showModal, largeImageUrl, isLoading } = this.state;
         return (
-            <div>
+            <div className={css.Container}>
    
     <Searchbar
     q={q}
     inputId={inputId}
     handleSubmit={this.handleSubmit}
-    handleChange={this.handleChange} />
+    handleChange={this.handleChange}
+    isLoading={isLoading} 
+    />
     {showModal && (
      <ModalImage imgUrl={largeImageUrl} onClose={this.toggleModal}/>
      )}
-     <ImagesList items={items} onClick={this.getLargeImgUrl} />
-     
+     <ImagesList items={items} onClick={this.openLargeImg} />
+     {isLoading && <Loader/>}
+    {items.length >0 && (
+        <LoadMore LoadMore={this.LoadMore} isLoading={isLoading}/>
+    )}
   </div>
         );
     };

@@ -1,12 +1,13 @@
 import PropTypes from 'prop-types';
+import css from './ImageListItem.module.css';
 
-const ImagesListItem = ({ items, onItemClick }) => {
+const ImagesListItem = ({ items, onClick }) => {
     return items.map((item, index) => {
         return (
         <li key={index} onClick={() => {
-            onItemClick(item.largeImageURL);
-        }}>
-            <img src={item.webformatURL} alt={item.tags}/>
+            onClick(item.largeImageURL);
+        }} className={css.GalleryItem}>
+            <img src={item.webformatURL} alt={item.tags} className={css.GalleryItemImage}/>
         </li>
         );
     });

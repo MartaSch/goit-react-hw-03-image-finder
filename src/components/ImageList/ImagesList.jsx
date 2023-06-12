@@ -1,12 +1,13 @@
-import ImagesListItem from './ImagesListItem';
+import ImagesListItem from '../ImageListItem/ImagesListItem';
 import PropTypes from 'prop-types';
+import css from './ImagesList.module.css'
 
 const ImagesList = ({ items, onClick }) => {
     return (
-        <ul>
+        <ul className={css.gallery}>
         <ImagesListItem
         items={items}
-        onItemClick={onClick}
+        onClick={onClick}
                 />
         </ul>
     )

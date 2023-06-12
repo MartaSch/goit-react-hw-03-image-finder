@@ -1,5 +1,6 @@
 import { Component } from "react";
 import PropTypes from 'prop-types';
+import css from './ModalImage.module.css';
 
 class ModalImage extends Component {
     componentDidMount() {
@@ -22,8 +23,8 @@ class ModalImage extends Component {
 
     render() {
         return (
-            <div onClick={this.handleBackdrop}>
-                <div>
+            <div onClick={this.handleBackdrop} className={css.Overlay}>
+                <div className={css.Modal}>
                     <img src = {this.props.imgUrl} alt = ""/>
                 </div>
             </div>
